@@ -22,4 +22,6 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('home');
 
 Route::resource('users', App\Http\Controllers\UserController::class);
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/mark-as-read', 'App\Http\Controllers\UserController@markNotification')->name('markNotification');
+Route::post('/post-notification', 'App\Http\Controllers\UserController@postNotification')->name('postNotification');
+Route::resource('notification', App\Http\Controllers\NotificationController::class);

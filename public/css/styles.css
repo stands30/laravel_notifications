@@ -50,3 +50,35 @@
  .slider.round:before {
     border-radius: 50%;
 }
+
+.notif-icon{
+    height: 25px;
+}
+
+.create-notif{
+    border: 2px solid #00000040;
+}
+
+.create-notif a{
+    color: #0a0abe !important;
+}
+
+.notif-container{
+    width: 400px;
+    box-sizing: border-box;
+    border: 2px solid #0000001c;
+    padding: 0px;
+}
+
+.all-read-tag{
+    padding-left: 10px;
+}
+
+.no-notif{
+    padding-top: 15px;
+    padding-left: 15px;
+    align-items: center;
+    justify-items: end;
+    display: flex;
+    max-width: 250px;
+}

@@ -8,6 +8,7 @@ use DataTables;
 use Validator;
 use Illuminate\Support\Facades\Input;
 use Redirect;
+use Auth;
 
 class UserController extends Controller
 {
@@ -16,14 +17,12 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    // public function index(Request $request)
-    // {
-    //     return self::getUserList($request);
-    //     return view('welcome');
-    // }
-
     public function index(Request $request){
-        if(\request()->ajax()){
+        if( Auth::user()->user_role != 'admin'){
+            return view('home');
+        }
+
+        if($request->ajax()){
 
             $data = User::latest()->get();
             return DataTables::of($data)
@@ -35,15 +34,16 @@ class UserController extends Controller
                                 <span class="slider round"></span>z
                     </label>';
                 })
-                ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $actionBtn;
+                ->addColumn('unred_count', function($row){
+                    return $row->un_read_notif_count;
                 })
                 ->rawColumns(['notification_status'])
                 ->make(true);
         }
-        return view('user_list');
+        $notifications = auth()->user()->unreadNotifications->where('expiration_date','<', now());
+        return view('user_list', compact('notifications'));
     }
+
     public static function update(Request $request, $id)
     {
         // validate
@@ -70,5 +70,18 @@ class UserController extends Controller
             ], 200);
         }
     }
+
+    public static function markNotification(Request $request)
+    {
+        auth()->user()
+            ->unreadNotifications
+            ->when($request->input('id'), function ($query) use ($request) {
+                return $query->where('id', $request->input('id'));
+            })
+            ->markAsRead();
+
+        return response()->noContent();
+    }
+
 
 }
